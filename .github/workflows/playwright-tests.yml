@@ -43,7 +43,7 @@ jobs:
         run: xvfb-run --auto-servernum dotnet test --configuration Release --no-build --logger "trx;LogFileName=test_results_${{ env.COMMIT_ID }}.trx"
       
       - name: Upload Test Results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: test-results-${{ env.COMMIT_ID }}
           path: test_results_${{ env.COMMIT_ID }}.trx
