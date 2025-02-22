@@ -9,41 +9,75 @@ on:
       - main
 
 jobs:
-  test:
+  ui-tests:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       
       - name: Setup .NET
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
       
       - name: Install Playwright CLI
         run: dotnet tool install --global Microsoft.Playwright.CLI
       
-      - name: Install Playwright Package
-        run: dotnet add package Microsoft.Playwright
-      
-      - name: Restore Dependencies
-        run: dotnet restore
-      
-      - name: Build Project
-        run: dotnet build --configuration Release --no-restore
-      
       - name: Install Playwright Browsers
-        run: playwright install
+        run: xvfb-run --auto-servernum playwright install --with-deps
+
+      - name: Restore and Build UI Tests
+        run: |
+          cd UI.Tests
+          dotnet restore
+          dotnet build --configuration Release --no-restore
       
       - name: Get Commit ID
         run: echo "COMMIT_ID=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
       
-      - name: Run Tests
-        run: xvfb-run --auto-servernum dotnet test --configuration Release --no-build --logger "trx;LogFileName=test_results_${{ env.COMMIT_ID }}.trx"
+      - name: Run UI Tests
+        run: |
+          cd UI.Tests
+          xvfb-run --auto-servernum dotnet test --configuration Release --no-build --logger "trx;LogFileName=ui_tests_results_${{ env.COMMIT_ID }}.trx"
       
-      - name: Upload Test Results
+      - name: Upload UI Test Results
         uses: actions/upload-artifact@v4
         with:
-          name: test-results-${{ env.COMMIT_ID }}
-          path: /home/runner/work/PlaywrightCSharp/PlaywrightCSharp/TestResults/test_results_${{ env.COMMIT_ID }}.trx
+          name: ui-test-results-${{ env.COMMIT_ID }}
+          path: UI.Tests/TestResults/ui_tests_results_${{ env.COMMIT_ID }}.trx
+
+  api-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      
+      - name: Install Playwright CLI
+        run: dotnet tool install --global Microsoft.Playwright.CLI
+      
+      - name: Restore and Build API Tests
+        run: |
+          cd API.Tests
+          dotnet restore
+          dotnet build --configuration Release --no-restore
+      
+      - name: Get Commit ID
+        run: echo "COMMIT_ID=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+      
+      - name: Run API Tests
+        run: |
+          cd API.Tests
+          dotnet test --configuration Release --no-build --logger "trx;LogFileName=api_tests_results_${{ env.COMMIT_ID }}.trx"
+      
+      - name: Upload API Test Results
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-test-results-${{ env.COMMIT_ID }}
+          path: API.Tests/TestResults/api_tests_results_${{ env.COMMIT_ID }}.trx

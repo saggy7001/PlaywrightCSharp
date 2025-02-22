@@ -1,5 +1,4 @@
 ﻿using Microsoft.Playwright;
-using System.Text.Json;
 
 namespace PlaywrightCSharp.Tests
 {
