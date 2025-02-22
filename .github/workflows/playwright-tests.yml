@@ -30,17 +30,17 @@ jobs:
         run: |
           cd UI.Tests
           dotnet add package Microsoft.Playwright
-      
-      - name: Install Playwright Browsers
-        run: |
-          cd UI.Tests 
-          playwright install
 
       - name: Restore and Build UI Tests
         run: |
           cd UI.Tests
           dotnet restore
           dotnet build --configuration Release --no-restore
+            
+      - name: Install Playwright Browsers
+        run: |
+          cd UI.Tests 
+          playwright install
       
       - name: Get Commit ID
         run: echo "COMMIT_ID=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
