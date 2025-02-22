@@ -25,10 +25,14 @@ jobs:
         run: dotnet tool install --global Microsoft.Playwright.CLI
 
       - name: Install Playwright Package
-        run: dotnet add package Microsoft.Playwright
+        run: |
+          cd UI.Tests
+          dotnet add package Microsoft.Playwright
       
       - name: Install Playwright Browsers
-        run: xvfb-run --auto-servernum playwright install --with-deps
+        run: |
+          cd UI.Tests 
+          xvfb-run --auto-servernum playwright install --with-deps
 
       - name: Restore and Build UI Tests
         run: |
@@ -63,10 +67,14 @@ jobs:
           dotnet-version: '8.0.x'
       
       - name: Install Playwright CLI
-        run: dotnet tool install --global Microsoft.Playwright.CLI
+        run: |
+          cd API.Tests 
+          dotnet tool install --global Microsoft.Playwright.CLI
 
       - name: Install Playwright Package
-        run: dotnet add package Microsoft.Playwright
+        run: |
+          cd API.Tests  
+          dotnet add package Microsoft.Playwright
       
       - name: Restore and Build API Tests
         run: |
