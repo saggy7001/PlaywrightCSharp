@@ -37,4 +37,4 @@ jobs:
         run: playwright install
       
       - name: Run Tests
-        run: dotnet test --configuration Release --no-build --logger "trx;LogFileName=test_results.trx"
+        run: xvfb-run --auto-servernum dotnet test --configuration Release --no-build --logger "trx;LogFileName=test_results.trx"
