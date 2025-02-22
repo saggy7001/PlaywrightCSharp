@@ -22,7 +22,9 @@ jobs:
           dotnet-version: '8.0.x'
       
       - name: Install Playwright CLI
-        run: dotnet tool install --global Microsoft.Playwright.CLI
+        run: |
+          cd UI.Tests
+          dotnet tool install --global Microsoft.Playwright.CLI
 
       - name: Install Playwright Package
         run: |
