@@ -46,4 +46,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: test-results-${{ env.COMMIT_ID }}
-          path: test_results_${{ env.COMMIT_ID }}.trx
+          path: /home/runner/work/PlaywrightCSharp/PlaywrightCSharp/TestResults/test_results_${{ env.COMMIT_ID }}.trx
