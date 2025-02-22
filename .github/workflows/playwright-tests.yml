@@ -36,5 +36,14 @@ jobs:
       - name: Install Playwright Browsers
         run: playwright install
       
+      - name: Get Commit ID
+        run: echo "COMMIT_ID=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+      
       - name: Run Tests
-        run: xvfb-run --auto-servernum dotnet test --configuration Release --no-build --logger "trx;LogFileName=test_results.trx"
+        run: xvfb-run --auto-servernum dotnet test --configuration Release --no-build --logger "trx;LogFileName=test_results_${{ env.COMMIT_ID }}.trx"
+      
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-results-${{ env.COMMIT_ID }}
+          path: test_results_${{ env.COMMIT_ID }}.trx
